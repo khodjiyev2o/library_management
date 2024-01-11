@@ -1,0 +1,23 @@
+class User:
+    is_admin: bool
+    username: str
+    password: str
+
+class Author:
+    user: Foreign Key
+
+class Category:
+    title: str
+
+class Book:
+    title: str
+    author: Foreign Key
+    language: choice
+    publication_date: date
+    category: Foreign Key
+    isbn: str(10-digits)
+
+class UserMembership:
+    user: Foreign Key
+    status: Active/Blocked
+    expires_at: date
