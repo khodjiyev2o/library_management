@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
 from app.models.models import User
 from app.schemas import UserIn, UserOut, Token
 from app.core.utils import Hash
@@ -33,6 +33,27 @@ async def create_user(user: UserIn, db: AsyncSession = Depends(get_db)):
 @router.post("/me/", response_model=UserOut, status_code=200)
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/become-admin/", response_model=UserOut, status_code=200)
+async def become_admin(current_user: User = Depends(get_current_user), db: AsyncSession = Depends(get_db)):
+    if current_user.is_admin:
+        raise HTTPException(status_code=400, detail="Already Admin User")
+
+    # Update the user in the database to become an admin
+    async with db as session:
+        await session.execute(
+            update(User).where(User.id == current_user.id).values(is_admin=True)
+        )
+        await session.commit()
+
+        user_out = UserOut(
+            id=current_user.id,
+            username=current_user.username,
+            is_admin=True,
+        )
+
+    return user_out
 
 
 @router.post("/login/", response_model=Token)
