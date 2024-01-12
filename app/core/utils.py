@@ -34,7 +34,7 @@ class Hash:
             payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
 
             id: str = payload.get("user_id")
-            print("id", type(id))
+
             if id is None:
                 raise credentials_exception
             token_data = DataToken(id=id)

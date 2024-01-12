@@ -11,7 +11,7 @@ from app.db import get_db
 router = APIRouter()
 
 
-@router.post("/users/", response_model=UserOut, status_code=201)
+@router.post("/register/", response_model=UserOut, status_code=201)
 async def create_user(user: UserIn, db: AsyncSession = Depends(get_db)):
     async with db as session:
         # Check if the username already exists
@@ -30,7 +30,7 @@ async def create_user(user: UserIn, db: AsyncSession = Depends(get_db)):
         return new_user
 
 
-@router.post("/users/me/", response_model=UserOut, status_code=200)
+@router.post("/me/", response_model=UserOut, status_code=200)
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
 
