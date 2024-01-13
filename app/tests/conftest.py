@@ -2,7 +2,7 @@ import pytest
 from app.main import app
 from httpx import AsyncClient
 from app.db import engine
-from app.models.models import Base
+from app.models.models import Base, Book
 
 
 @pytest.fixture(scope='session')

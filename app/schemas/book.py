@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class AuthorBase(BaseModel):
@@ -19,10 +20,10 @@ class BookList(BaseModel):
     id: int
     title: str
     isbn: str
-    category_id: int
-    author_id: int
+    category_id: Optional[int]
+    author_id: Optional[int]
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 

@@ -55,3 +55,34 @@ async def test_user_me(client: AsyncClient, refresh_db):
     assert response.json()['is_admin'] is False
     assert response.json()['id'] == 1
 
+
+@mark.anyio
+async def test_become_admin(client: AsyncClient, refresh_db):
+    response = await client.post('/api/users/login/', json=user1.model_dump())
+    assert response.status_code == 200
+    assert list(response.json().keys()) == ['access_token', "token_type"]
+    assert response.json()['token_type'] == "bearer"
+    access_token = response.json()['access_token']
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    response = await client.post('/api/users/become-admin/', headers=headers)
+    assert response.json()['username'] == user1.username
+    assert response.json()['id'] == 1
+    assert response.json()['is_admin'] is True
+
+
+@mark.anyio
+async def test_become_already_admin(client: AsyncClient, refresh_db):
+    response = await client.post('/api/users/login/', json=user1.model_dump())
+    assert response.status_code == 200
+    assert list(response.json().keys()) == ['access_token', "token_type"]
+    assert response.json()['token_type'] == "bearer"
+    access_token = response.json()['access_token']
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+    response = await client.post('/api/users/become-admin/', headers=headers)
+    assert response.status_code == 400
+    assert response.json()['detail'] == 'Already Admin User'
+

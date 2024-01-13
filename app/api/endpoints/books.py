@@ -13,7 +13,7 @@ from app.api.utils import fetch_and_create_books_by_category
 router = APIRouter()
 
 
-@router.get("/List", response_model=List[BookList])
+@router.get("/List/", response_model=List[BookList])
 async def books_list(current_user: User = Depends(check_user_membership),
                      db: AsyncSession = Depends(get_db),
                      search: Optional[str] = None,
